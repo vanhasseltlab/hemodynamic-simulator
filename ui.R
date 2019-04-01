@@ -57,15 +57,21 @@ body <- dashboardBody(
                                                           
                                                           }
                                                          #titleID0{background-color:#001158}
-                                                         #titleID1{background-color:#f46e32}
+                                                         #titleID1{background-color:#001158}
                                                          #titleID2{background-color:#001158}
-                                                         #titleID3{background-color:#f46e32}
+                                                         #titleID3{background-color:#001158}
                                                          #titleID4{background-color:#001158}
                                                          #titleID5{background-color:#001158}
                                                          #titleID6{background-color:#001158}
-                                                         #titleID7{background-color:#001158}"))),
+                                                         #titleID7{background-color:#001158}
+                                                         #titleID8{background-color:#001158}
+                                                         
+                                                         
+             "))),
                                
                                column(width = 4,
+                                      
+                                      #-------------------------------------- Species -------------------------------------------
                                       box(width = NULL,
                                           id = "box0",
                                           collapsible = TRUE,collapsed = TRUE,
@@ -78,13 +84,14 @@ body <- dashboardBody(
                                             awesomeRadio("rattype","Select rat strain:",choices = c("spontaneously hypertensive rats (SHR)","normotensive Wistar-Kyoto rats (WKY)"),
                                                                                                     selected = "spontaneously hypertensive rats (SHR)", inline = TRUE)
                                           ),
-                                          actionButton("info1","Species Information",icon = icon("info-circle"))),
+                                          actionButton("info1","Species-specific model parameters",icon = icon("info-circle"))),
                                       
+                                      #--------------------------------------- Reference Drug (Optional) ---------------------------
                                       box(width = NULL,
                                           id = "box1",
                                           title = actionLink("titleID1",span(icon("book"),span("Reference Drug (Optional)",style = "font-weight:bold"))),
                                           collapsible = TRUE,collapsed = TRUE,
-                                          status = "success",
+                                          status = "primary",
                                           solidHeader = TRUE,
                               
                                           pickerInput("drugname", "Drug:",
@@ -100,17 +107,19 @@ body <- dashboardBody(
                                           conditionalPanel(
                                             condition = "input.drugname != '' ",
                                             
-                                            actionButton("info2","Drug Information",icon = icon("info-circle")),
+                                            actionButton("info2","Drug-specific model parameters",icon = icon("info-circle")),
+                                            h5(),
+                                            materialSwitch("plotswitch",span("Show plot:",style="font-weight:bold;color:#f46e32"),value = FALSE, status="primary"),
                                             hr(),
                                             fluidRow(align ="center",span("Dose Regimen",style = "font-weight:bold;font-style:italic;font-size:18px;color:grey;")),
                                             sliderInput("nd2", "Number of doses:", value=1, min=1, max = 10, step = 1),
                                             sliderInput("ii2", "Interdose interval (day):", value = 1, min = 0.5, max = 14, step = 0.5),
                                             awesomeRadio("amountunit2","Amount Unit:",choices = c("mg/kg","ug/kg","ng/kg"), selected = "mg/kg", inline = TRUE),
-                                            sliderInput("amt2","Amount:",min = 0, max = 100, value = 10),
-                                            materialSwitch("plotswitch",span("Show plot:",style="font-weight:bold;color:#f46e32"),value = FALSE, status="primary")
+                                            sliderInput("amt2","Amount:",min = 0, max = 100, value = 10)
                                           )
                                           ),
- 
+                                      
+                                      #------------------------------------------- Investigational Drug -------------------------------------------------
                                       box(width = NULL,
                                           id = "box2",
                                           title = actionLink("titleID2",span(icon("search"),span("Investigational Drug",style = "font-weight:bold"))),
@@ -164,11 +173,12 @@ body <- dashboardBody(
                                             sliderInput("emax","Emax:",min = 0, max = 2, value = 1, step = 0.01),
                                             sliderInput("ec50","EC50 (ng/ml):", min = 1, max = 1000, value = 100, step = 1))),
                                       
+                                      #---------------------------------------------- Input your data (Optional) ------------------------------------------------ 
                                       box(width = NULL,
                                           id = "box3",
                                           title = actionLink("titleID3",span(icon("upload"),span("Input your data (Optional)",style = "font-weight:bold"))),
                                           collapsible = TRUE,collapsed = TRUE,
-                                          status = "success",
+                                          status = "primary",
                                           solidHeader = TRUE,
                                           
                                           fileInput("file1","Input your dataset (.xls, .xlsx, .csv):",
@@ -179,9 +189,16 @@ body <- dashboardBody(
                                                    ),
                                           actionButton("template","Dataset Template",icon = icon("table"))
                                          ),
+                                      
+                                      #-------------------------------------------- Model Information -------------------------------------------------------
                                       box(width = NULL,
-                                          title = span("Model Information",style = "font-weight:bold"),
-                                          tags$img(src = "model.png",style = "display:block;max-width:100%;max-height:100%;width:auto;height:auto;
+                                          id = "box4",
+                                          title = actionLink("titleID4",span(icon("info-circle"),span("Model Information",style = "font-weight:bold"))),
+                                          collapsible = TRUE, collapsed = TRUE,
+                                          status = "primary",
+                                          solidHeader = TRUE,
+                                          
+                                          tags$img(src = "model.png",style = "display:block;max-width:80%;max-height:80%;width:auto;height:auto;
                                                                         margin-left:auto;margin-right:auto;margin-bottom:auto;margin-top:auto"),
                                           span(tags$a(href="https://bpspubs.onlinelibrary.wiley.com/doi/full/10.1111/bph.12824", 
                                                       "[1] Snelder, N. et al. Br J Pharmacol (2014)."),
@@ -202,32 +219,42 @@ body <- dashboardBody(
                                ),
                                
                                 column(width = 4,
-                                       box(width = NULL, 
-                                           id = "box4", collapsible = TRUE, 
-                                           plotOutput("PK",height="400px"), 
-                                           title = actionLink("titleID4",span(icon("prescription-bottle-alt"),span("PK - Pharmacokinetics",style = "font-weight:bold"))), 
-                                           status = "primary", solidHeader = TRUE),
+                                       
+                                       #------------------------------- PK -------------------------------------
                                        box(width = NULL, 
                                            id = "box5", collapsible = TRUE, 
+                                           plotOutput("PK",height="400px"), 
+                                           title = actionLink("titleID5",span(icon("prescription-bottle-alt"),span("PK - Pharmacokinetics",style = "font-weight:bold"))), 
+                                           status = "primary", solidHeader = TRUE),
+                                       
+                                       #------------------------------- CO --------------------------------------
+                                       box(width = NULL, 
+                                           id = "box6", collapsible = TRUE, 
                                            plotOutput("CO",height="400px"),
-                                           title = actionLink("titleID5",span(icon("tint"),span("CO - Cardiac Output",style = "font-weight:bold"))), 
+                                           title = actionLink("titleID6",span(icon("tint"),span("CO - Cardiac Output",style = "font-weight:bold"))), 
                                            status = "primary", solidHeader = TRUE)
                                        ),
                                 column(width = 4,
-                                       box(width = NULL, 
-                                           id = "box6", collapsible = TRUE, 
-                                           plotOutput("HR",height="400px"),
-                                           title = actionLink("titleID6",span(icon("heartbeat"),span("HR - Heart Rate",style = "font-weight:bold"))), 
-                                           status = "primary", solidHeader = TRUE),
+                                       
+                                       #------------------------------- PK --------------------------------------
                                        box(width = NULL, 
                                            id = "box7", collapsible = TRUE, 
+                                           plotOutput("HR",height="400px"),
+                                           title = actionLink("titleID7",span(icon("heartbeat"),span("HR - Heart Rate",style = "font-weight:bold"))), 
+                                           status = "primary", solidHeader = TRUE),
+                                       
+                                       #------------------------------- MAP --------------------------------------
+                                       box(width = NULL, 
+                                           id = "box8", collapsible = TRUE, 
                                            plotOutput("MAP",height="400px"), 
-                                           title = actionLink("titleID7",span(icon("bolt"),span("MAP - Mean Arterial Pressure", style = "font-weight:bold"))), 
+                                           title = actionLink("titleID8",span(icon("bolt"),span("MAP - Mean Arterial Pressure", style = "font-weight:bold"))), 
                                            status = "primary", solidHeader = TRUE)
                                        )
                                ),
+                      
+                      #--------------------------------------------- The Bottom ------------------------------------------
                       fluidRow(align = "center",
-                               span("Version 1.0.0, Made by",
+                               span("Version 1.0.1, Made by",
                                     tags$a(href="mailto:y.fu@lacdr.leidenuniv.nl", "Yu Fu"),
                                     ", ",
                                     tags$a(href="https://www.universiteitleiden.nl/en/staffmembers/coen-van-hasselt#tab-1", "J.G.C. van Hasselt"),
@@ -240,7 +267,7 @@ body <- dashboardBody(
 )
 
 ui <- dashboardPage(skin="blue",
-      dashboardHeader(title = "Hemodynamic-simulator",
+      dashboardHeader(title = "Hemodynamic simulator",
                       tags$li(class = "dropdown", downloadBttn("report", span("Generate Report",style = "font-weight:bold;color:#fff"),size = "sm",style = "bordered"),
                               style = "padding-top:8px; padding-bottom:8px;padding-right:10px"),
                       titleWidth = "500px"),

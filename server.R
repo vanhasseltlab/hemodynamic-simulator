@@ -40,6 +40,9 @@ server <- function(input, output){
   observeEvent(input$titleID7, {
     js$collapse("box7")
   })
+  observeEvent(input$titleID7, {
+    js$collapse("box8")
+  })
 
   r <- reactive({
     theta1 <- NULL
@@ -535,8 +538,16 @@ server <- function(input, output){
               theme(legend.justification=c(1,1), legend.position=c(0.9,0.9), legend.title=element_blank())
   
   #--------------------------------------- Plots -------------------------------
-
+  
   output$PK <- renderPlot({
+    withProgress(message = 'Plotting in progress',
+                 detail = 'This may take a while...', value = 0, 
+                 expr = {
+                   for (i in 1:10) {
+                     incProgress(1/10)
+                     Sys.sleep(0.05)
+                   }
+                 })
     r()$pk + axisset1
     })
 
@@ -586,6 +597,7 @@ server <- function(input, output){
   output$report <- downloadHandler(
     filename = "report.pdf",
     content = function(file) {
+      
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which
       # can happen when deployed).
@@ -603,10 +615,19 @@ server <- function(input, output){
       # Knit the document, passing in the `params` list, and eval it in a
       # child of the global environment (this isolates the code in the document
       # from the code in this app).
-      rmarkdown::render(tempReport, output_file = file,
-                        params = params,
-                        envir = new.env(parent = globalenv())
-      )
+      
+      withProgress(message = 'Generating report in progress',
+                   detail = 'This may take a while...', value = 0, 
+                   expr = {
+                     for (i in 1:10) {
+                       incProgress(1/10)
+                       Sys.sleep(0.1)
+                     }
+                   })
+        rmarkdown::render(tempReport, output_file = file,
+                          params = params,
+                          envir = new.env(parent = globalenv())
+        )
     }
   )
 
