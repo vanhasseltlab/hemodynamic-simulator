@@ -24,7 +24,7 @@ body <- dashboardBody(
                       
                       useShinyalert(),
                       
-                      fluidRow(setSliderColor(c(rep("#f46e32",3), rep("#001158",12)), 1:15),
+                      fluidRow(setSliderColor(rep("#001158",15), 1:15),
                                # set shadow for boxes
                                setShadow("box"),
                                
@@ -113,7 +113,7 @@ body <- dashboardBody(
                                             
                                             actionButton("info2","Drug-specific model parameters",icon = icon("info-circle")),
                                             h5(),
-                                            materialSwitch("plotswitch",span("Show plot:",style="font-weight:bold;color:#f46e32"),value = FALSE, status="primary"),
+                                            materialSwitch("plotswitch",span("Show plot:",style="font-weight:bold"),value = FALSE, status="primary"),
                                             hr(),
                                             fluidRow(align ="center",span("Dose Regimen",style = "font-weight:bold;font-style:italic;font-size:18px;color:grey;")),
                                             sliderInput("nd2", "Number of doses:", value=1, min=1, max = 10, step = 1),
