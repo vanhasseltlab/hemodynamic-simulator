@@ -186,7 +186,7 @@ body <- dashboardBody(
                                           status = "primary",
                                           solidHeader = TRUE,
                                           
-                                          actionButton("setipnm","Set drug name (optional)"),
+                                          textInput("inputname","Drug name (optional):",placeholder = "Enter drug name here"),
                                           fileInput("file1","Input your dataset (.xls, .xlsx, .csv):",
                                                     accept = c(".xls",
                                                                ".csv",

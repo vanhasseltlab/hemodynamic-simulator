@@ -195,23 +195,23 @@ server <- function(input, output){
     incProgress(1/3)
 
       #---------------- Reference Drug --------------------  
-      if (input$plotswitch == TRUE){
-        
-        #-------------------------------- amount unit 2-------------------------------------
-        amount2 <- switch(input$amountunit2, 'mg/kg' = input$amt2 * 10^6, 'ug/kg' = input$amt2 * 10^3, 'ng/kg' = input$amt2)
-        #------------------------------------ dose event 2----------------------------------------------
-        
-        if(input$nd2 > 1){
-          ev2 <- eventTable()
-          ev2$add.dosing(dose = amount2, nbr.doses = input$nd2, dosing.interval = input$ii2*24)}
-        else {
-          ev2 <- eventTable()
-          ev2$add.dosing(dose = amount2,nbr.doses = input$nd2)}
-        
-        ev2$add.sampling(0:(input$obs*tu))
-        
+
         #-------------------------- match drug name --------------------------------------
         if (input$plotswitch == TRUE) {
+          
+          #-------------------------------- amount unit 2-------------------------------------
+          amount2 <- switch(input$amountunit2, 'mg/kg' = input$amt2 * 10^6, 'ug/kg' = input$amt2 * 10^3, 'ng/kg' = input$amt2)
+          #------------------------------------ dose event 2----------------------------------------------
+          
+          if(input$nd2 > 1){
+            ev2 <- eventTable()
+            ev2$add.dosing(dose = amount2, nbr.doses = input$nd2, dosing.interval = input$ii2*24)}
+          else {
+            ev2 <- eventTable()
+            ev2$add.dosing(dose = amount2,nbr.doses = input$nd2)}
+          
+          ev2$add.sampling(0:(input$obs*tu))
+          
         if (input$drugname == "Amiloride"){
           pk2 <- "d/dt(D) = -F1*ka*D;
                   d/dt(L) =  F1*ka*D -klc*L + kcl*A - kle*L;
@@ -306,7 +306,7 @@ server <- function(input, output){
         m2 <- RxODE(pkpd2)
         x2 <- solve(m2,theta2,ev2,inits)
         }
-      }
+    
     incProgress(1/3)
     #----------------- plot setting ----------------------      
     pl <- ggplot()+
