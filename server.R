@@ -15,36 +15,15 @@ library(tools)
 
 
 server <- function(input, output){
-  
-  observeEvent(input$titleID0, {
-    js$collapse("box0")
-  })
-  observeEvent(input$titleID1, {
-    js$collapse("box1")
-  })
-  observeEvent(input$titleID2, {
-    js$collapse("box2")
-  })
-  observeEvent(input$titleID3, {
-    js$collapse("box3")
-  })
-  observeEvent(input$titleID4, {
-    js$collapse("box4")
-  })
-  observeEvent(input$titleID5, {
-    js$collapse("box5")
-  })
-  observeEvent(input$titleID6, {
-    js$collapse("box6")
-  })
-  observeEvent(input$titleID7, {
-    js$collapse("box7")
-  })
-  observeEvent(input$titleID7, {
-    js$collapse("box8")
-  })
+  #-------- collapse box header ----------
+  source("www/collapse_box.R", local = TRUE)
 
   r <- reactive({
+    
+    #------- Plotting Progress Bar-------
+    withProgress(message = 'Plotting in progress',
+                 detail = 'This may take a while...', value = 0, {
+                   
     theta1 <- NULL
     theta2 <- NULL
     info1 <- NULL
@@ -183,10 +162,7 @@ server <- function(input, output){
     
     #------------------------ Model equations --------------------------
     
-    if (input$cmt ==""){
-      x1 <- data.frame(time = NA, C = NA, CR_HR = NA,CR_TPR = NA,EFF1 = NA,EFF2 = NA,EFF3 = NA,
-                       HR = NA,SV1 = NA,TPR = NA,CO = NA,MAP = NA)[0,]
-    } else {
+    if (input$cmt !="") {
            if (input$cmt == "one-compartmental"){
              pk1 <- "d/dt(A) = -k10*A;"
              pkparams1 <- c(V1=input$V1*1000,
@@ -215,13 +191,11 @@ server <- function(input, output){
       pkpd1 <- paste(pk1,pd)
       m1 <- RxODE(pkpd1)
       x1 <- solve(m1,theta1,ev1,inits)}
+    
+    incProgress(1/3)
 
       #---------------- Reference Drug --------------------  
-      if (input$plotswitch == FALSE){
-        x2 <- data.frame(time = NA, C = NA, CR_HR = NA,CR_TPR = NA,EFF1 = NA,EFF2 = NA,EFF3 = NA,
-                         HR = NA,SV1 = NA,TPR = NA,CO = NA,MAP = NA)[0,]
-      } 
-      else{
+      if (input$plotswitch == TRUE){
         
         #-------------------------------- amount unit 2-------------------------------------
         amount2 <- switch(input$amountunit2, 'mg/kg' = input$amt2 * 10^6, 'ug/kg' = input$amt2 * 10^3, 'ng/kg' = input$amt2)
@@ -237,7 +211,7 @@ server <- function(input, output){
         ev2$add.sampling(0:(input$obs*tu))
         
         #-------------------------- match drug name --------------------------------------
-        
+        if (input$plotswitch == TRUE) {
         if (input$drugname == "Amiloride"){
           pk2 <- "d/dt(D) = -F1*ka*D;
                   d/dt(L) =  F1*ka*D -klc*L + kcl*A - kle*L;
@@ -331,8 +305,9 @@ server <- function(input, output){
         theta2 <- c(others, pkparams2,effparams)
         m2 <- RxODE(pkpd2)
         x2 <- solve(m2,theta2,ev2,inits)
+        }
       }
-    
+    incProgress(1/3)
     #----------------- plot setting ----------------------      
     pl <- ggplot()+
       theme_bw()+
@@ -362,7 +337,20 @@ server <- function(input, output){
       
       vc <- c("#001158","#f46e32","#00ad4f")
       names(vc) <- c("x","r","i")
-      lc <- c("Investigational Drug",input$drugname,"Input dataset")
+      #------------------- drug name ----------------
+      if (input$IDname == ""){
+        idname <- "Investigational Drug"
+      } else{
+        idname <- input$IDname
+      }
+      
+      if (input$inputname == ""){
+        inputname <- "Input dataset"
+      } else{
+        inputname <- input$inputname
+      }
+      
+      lc <- c(idname,input$drugname,inputname)
       names(lc) <- c("x","r","i")
       vdisp1 <- rep(FALSE,3)
       vdisp2 <- rep(FALSE,3)
@@ -420,111 +408,13 @@ server <- function(input, output){
       p  <- p  + scale_colour_manual(values = vc[vdisp4], labels = lc[vdisp4])
     }
     #--------------------------------- species information --------------------------
-    if (input$specie == "Rat"){
-      if (input$rattype == "spontaneously hypertensive rats (SHR)"){
-        info1 <- "<b>spontaneously hypertensive rats (SHR)</b><br><br>
-                  BSL_HR_SHR = 310 beats/min <br>
-                  BSL_MAP_SHR = 155 mmHg <br>
-                  BSL_CO_SHR = 69 ml/min <br>
-                  k<sub>out_HR</sub> = 11.6 h<sup>-1</sup> <br>
-                  k<sub>out_SV</sub> = 0.126 h<sup>-1</sup> <br>
-                  k<sub>out_TPR</sub> = 3.58 h<sup>-1</sup> <br>
-                  FB = 0.0029 mmHg<sup>-1</sup> <br>
-                  HR_SV = 0.312 <br>
-                  hor<sub>HR</sub> = 8.73 h <br>
-                  amp<sub>HR</sub> = 0.0918 <br>
-                  hor<sub>TPR</sub> = 19.3 h <br>
-                  amp<sub>TPR</sub> = 0.0918 <br><br>
-                  <a href='https://bpspubs.onlinelibrary.wiley.com/doi/full/10.1111/bph.12824'>[1] Snelder, N. et al. Br J Pharmacol (2014).</a>"
-      }
-      if (input$rattype == "normotensive Wistar-Kyoto rats (WKY)"){
-        info1 <- "<b>normotensive Wistar-Kyoto rats (WKY)</b><br><br>
-                  BSL_HR_WKY = 323 beats/min <br>
-                  BSL_MAP_WKY = 102 mmHg <br>
-                  BSL_CO_WKY = 129 ml/min <br>
-                  k<sub>out_HR</sub> = 11.6 h<sup>-1</sup> <br>
-                  k<sub>out_SV</sub> = 0.126 h<sup>-1</sup> <br>
-                  k<sub>out_TPR</sub> = 3.58 h<sup>-1</sup> <br>
-                  FB = 0.0029 mmHg<sup>-1</sup> <br>
-                  HR_SV = 0.312 <br>
-                  hor<sub>HR</sub> = 8.73 h <br>
-                  amp<sub>HR</sub> = 0.0918 <br>
-                  hor<sub>TPR</sub> = 19.3 h <br>
-                  amp<sub>TPR</sub> = 0.0918<br><br>
-                  <a href='https://bpspubs.onlinelibrary.wiley.com/doi/full/10.1111/bph.12824'>[1] Snelder, N. et al. Br J Pharmacol (2014).</a>"
-      }
-    }else {
-      info1 <- "<b>Beagle Dog</b><br><br>
-      BSL_HR = 79.7 beats/min <br>
-      BSL_MAP = 110 mmHg <br>
-      BSL_CO = 1450 ml/min <br>
-      k<sub>out_HR</sub> = 10 h<sup>-1</sup> <br>
-      k<sub>out_SV</sub> = 10 h<sup>-1</sup> <br>
-      k<sub>out_TPR</sub> = 10 h<sup>-1</sup> <br>
-      FB = 0.0029 mmHg<sup>-1</sup> <br>
-      HR_SV = 0.312 <br>
-      hor<sub>HR</sub> = 8.73 h <br>
-      amp<sub>HR</sub> = 0.0918 <br>
-      hor<sub>TPR</sub> = 19.3 h <br>
-      amp<sub>TPR</sub> = 0.0918<br><br>
-      <a href='https://bpspubs.onlinelibrary.wiley.com/doi/full/10.1111/bph.12824'>[1] Snelder, N. et al. Br J Pharmacol (2014).</a><br>
-      <a href='https://www.page-meeting.org/?abstract=5953#'>[2] Venkatasubramanian, R. et al. PAGE Poster (2016).</a>"
-    }
+    source("www/species_info.R",local = TRUE)
+    
     #--------------------------------- drug information -----------------------------
-    info2 <- switch(input$drugname,
-    "Amiloride" = "<b>Amiloride<br><br>
-          <img src='Amiloride.png' width = '200'><br><br>
-          PK model:</b><br> Two-compartmental model with liver compartment<br>
-          ka = 0.086 h<sup>-1</sup> <br> klc = 0.491 h<sup>-1</sup> <br> kcl = 0.563 h<sup>-1</sup> <br> kcp = 0.290 h<sup>-1</sup> <br> 
-          kpc = 0.017 h<sup>-1</sup> <br> kle = 7.069 h<sup>-1</sup> <br> kce = 0.042 h<sup>-1</sup> <br> V1 = 0.202 L/kg <br> F1 = 0.9887<br>
-          <br><b> PD model: </b> <br> Diuretic with effect on SV <br>
-          Emax model with Emax fixed to 1<br>
-          EC50 = 245 ng/ml <br>",
-    "Amlodipine" = "<b>Amlodipine <br> <br>
-          <img src='Amlodipine.png' width = '200'><br><br>
-          PK model:</b><br> One-compartmental model<br>
-          ka = 0.4 h<sup>-1</sup> <br> V1 = 32 L/kg <br> k10 = 0.23 h<sup>-1</sup> <br>
-          <br><b> PD model: </b> <br> Calcium channel blocker with effect on TPR <br>
-          Emax model with Emax fixed to 1<br>
-          EC50 = 82.8 ng/ml",
-    "Atropine" = "<b>Atropine <br> <br>
-          <img src='Atropine.png' width = '200'><br><br>
-          PK model:</b><br> Two-compartmental model<br>
-          V1 = 10.79 L/kg <br> k10 = 2.58 h<sup>-1</sup> <br> k12 = 9.24 h<sup>-1</sup><br> k21 = 4.92 h<sup>-1</sup><br>
-          <br><b> PD model: </b> <br> M2 receptor antagonist with effect on HR <br>
-          linear model <br>
-          SL = 0.00149 (ng/ml)<sup>-1</sup>",
-    "Enalapril" = "<b>Enalapril <br> <br> 
-          <img src='Enalapril.png' width = '200'><br><br>
-          PK model:</b> <br> Two-compartmental model with Michaelis-Menten elimination <br>
-          VM = 767 ug/(ml*h)<br> V1 = 0.346 L/kg <br> k12 = 1.56 h<sup>-1</sup><br> k21 = 2.94 h<sup>-1</sup><br>
-          KM = 150 ug/ml <br> ka = 1.75 h<sup>-1</sup> <br> F1 = 0.376 h<sup>-1</sup> <br>
-          <br><b> PD model: </b> <br> Angiotensin-converting enzyme (ACE) inhibitor with effect on both TPR and SV <br>
-          Emax model with Emax fixed to 1<br>
-          EC50 = 1200 ng/ml",
-    "Fasudil" = "<b>Fasudil<br><br>
-          <img src='Fasudil.png' width = '200'><br><br>
-          PK model:</b><br> One-compartmental model <br>
-          V1 = 22.92 L/kg, k10 = 4.62 h<sup>-1</sup> <br>
-          <br><b> PD model: </b> <br> Rho-kinase inhibitor with effect on TPR <br>
-          Emax model with Emax fixed to 1<br>
-          EC50 = 0.172 ng/ml",
-    "HCTZ" = "<b>Hydrochlorothiazide(HCTZ)<br><br>
-          <img src='HCTZ.png' width = '200'><br><br>
-          PK model:</b><br> One-compartmental model <br>
-          V1 = 0.0168 L/kg <br> k10 = 0.079 h<sup>-1</sup> <br> ka = 0.563 h<sup>-1</sup> <br> F1 = 0.007 <br>
-          <br><b> PD model: </b><br> Diuretic with effect on SV <br>
-          Emax model with Emax fixed to 1<br>
-          EC50 = 28900 ng/ml",
-    "Prazosin" = "<b>Prazosin<br><br> 
-          <img src='Prazosin.png' width = '200'><br><br>
-          PK model:</b><br> One-compartmental model <br>
-          V1 = 39.2 L/kg <br> k10 = 0.694 h<sup>-1</sup> <br>
-          <br><b> PD model: </b><br> Selective &alpha;<sub>1</sub> adrenergic receptor blocker with effect on TPR <br>
-          Power model<br>
-          SL = 0.328 (ng/ml)<sup>-1</sup> <br>
-          POW = 0.091"
-    )
+    source("www/drug_info.R",local = TRUE)
+    
+    incProgress(1/3)
+                 })
  
     return(list(pk = pk, hr = hr, co = co, p = p, theta1 = theta1, theta2 = theta2,info1 = info1, info2 = info2))
   })
@@ -540,14 +430,6 @@ server <- function(input, output){
   #--------------------------------------- Plots -------------------------------
   
   output$PK <- renderPlot({
-    withProgress(message = 'Plotting in progress',
-                 detail = 'This may take a while...', value = 0, 
-                 expr = {
-                   for (i in 1:10) {
-                     incProgress(1/10)
-                     Sys.sleep(0.05)
-                   }
-                 })
     r()$pk + axisset1
     })
 
@@ -563,8 +445,7 @@ server <- function(input, output){
   output$MAP <- renderPlot({
     r()$p + axisset1
   })
-  
-  template <- data.frame(time = c(0:3,"..."),PK = c(1:4,"..."),HR = c(2:5,"..."),CO = c(3:6,"..."),MAP = c(4:7,"..."))
+
   
   observeEvent(input$info1, {
     showModal(modalDialog(
@@ -579,6 +460,8 @@ server <- function(input, output){
       renderUI({HTML(r()$info2)})
     ))
   })
+  
+  template <- data.frame(time = c(0:3,"..."),PK = c(1:4,"..."),HR = c(2:5,"..."),CO = c(3:6,"..."),MAP = c(4:7,"..."))
   
   observeEvent(input$template, {
     showModal(modalDialog(
@@ -598,11 +481,17 @@ server <- function(input, output){
     filename = "report.pdf",
     content = function(file) {
       
+      #------------ Generating Report Progress bar -------------
+      withProgress(message = 'Generating Report',
+                   detail = 'This may take a while...',
+                   value = 0, {
+      
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
       file.copy("report.Rmd", tempReport, overwrite = TRUE)
+      incProgress(1/3)
       
       # Set up parameters to pass to Rmd document
       params <- list(theta1 = r()$theta1,
@@ -611,23 +500,18 @@ server <- function(input, output){
                      hr = r()$hr,
                      co = r()$co,
                      p = r()$p)
+      incProgress(1/3)
       
       # Knit the document, passing in the `params` list, and eval it in a
       # child of the global environment (this isolates the code in the document
       # from the code in this app).
+      rmarkdown::render(tempReport, output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+      incProgress(1/3)
       
-      withProgress(message = 'Generating report in progress',
-                   detail = 'This may take a while...', value = 0, 
-                   expr = {
-                     for (i in 1:10) {
-                       incProgress(1/10)
-                       Sys.sleep(0.1)
-                     }
-                   })
-        rmarkdown::render(tempReport, output_file = file,
-                          params = params,
-                          envir = new.env(parent = globalenv())
-        )
+      })
     }
   )
 

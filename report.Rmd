@@ -32,7 +32,7 @@ $$
 \rm{{CR}_{TPR}} & = \rm{amp_{TPR}\cdot{cos}\left(\frac{2\pi\cdot(t+hor_{TPR})}{24}\right)}
 \end{aligned}
 $$
-[[1] Snelder, N. et al. Br J Pharmacol (2014)](https://bpspubs.onlinelibrary.wiley.com/doi/full/10.1111/bph.12824)    
+[[1] Snelder, N. et al. Br J Pharmacol (2014)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4253457/)    
 
 ## Parameters for Reference Drug
 ```{r echo=FALSE}

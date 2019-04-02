@@ -22,8 +22,12 @@ body <- dashboardBody(
                       useShinyjs(),
                       extendShinyjs(text = jscode),
                       
+                      useShinyalert(),
+                      
                       fluidRow(setSliderColor(c(rep("#f46e32",3), rep("#001158",12)), 1:15),
+                               # set shadow for boxes
                                setShadow("box"),
+                               
                                tags$head(tags$style(HTML(".skin-blue .main-header > .logo { background-color: #001158;
                                                                                             font-weight: bold;
                                                                                             font-size: 28px}
@@ -127,9 +131,10 @@ body <- dashboardBody(
                                           status = "primary",
                                           solidHeader = TRUE,
                                           
+                                          textInput("IDname","Drug name (optional):",placeholder = "Enter drug name here"),
                                           pickerInput("cmt", "Select PK model:",
                                                        choices = c("one-compartmental", "two-compartmental", "three-compartmental"),
-                                                       options = list(title = "PK model")),
+                                                       options = list(title = "Select one, two or three compartmental model")),
                                           
                                           conditionalPanel(
                                             condition = "input.cmt =='one-compartmental'| input.cmt == 'two-compartmental'| input.cmt =='three-compartmental'" ,
@@ -181,12 +186,11 @@ body <- dashboardBody(
                                           status = "primary",
                                           solidHeader = TRUE,
                                           
+                                          actionButton("setipnm","Set drug name (optional)"),
                                           fileInput("file1","Input your dataset (.xls, .xlsx, .csv):",
-                                                    accept = c(
-                                                               ".xls",
+                                                    accept = c(".xls",
                                                                ".csv",
-                                                               ".xlsx")
-                                                   ),
+                                                               ".xlsx")),
                                           actionButton("template","Dataset Template",icon = icon("table"))
                                          ),
                                       
@@ -200,7 +204,8 @@ body <- dashboardBody(
                                           
                                           tags$img(src = "model.png",style = "display:block;max-width:80%;max-height:80%;width:auto;height:auto;
                                                                         margin-left:auto;margin-right:auto;margin-bottom:auto;margin-top:auto"),
-                                          span(tags$a(href="https://bpspubs.onlinelibrary.wiley.com/doi/full/10.1111/bph.12824", 
+                                          # open link in a new window :add argument target = "_blank" 
+                                          span(tags$a(href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4253457/",target="_blank", 
                                                       "[1] Snelder, N. et al. Br J Pharmacol (2014)."),
                                                style = "font-size:16px;font-style: italic;"),
                                           
@@ -257,7 +262,7 @@ body <- dashboardBody(
                                span("Version 1.0.1, Made by",
                                     tags$a(href="mailto:y.fu@lacdr.leidenuniv.nl", "Yu Fu"),
                                     ", ",
-                                    tags$a(href="https://www.universiteitleiden.nl/en/staffmembers/coen-van-hasselt#tab-1", "J.G.C. van Hasselt"),
+                                    tags$a(href="https://www.universiteitleiden.nl/en/staffmembers/coen-van-hasselt#tab-1",target="_blank", "J.G.C. van Hasselt"),
                                     style = "font-size:18px;font-style: italic")),
                       fluidRow(align = "center",
                                img(src = "LU_logo.png", height = 120),
