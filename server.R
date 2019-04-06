@@ -138,26 +138,7 @@ server <- function(input, output){
                           EC50_3=input$ec50    #ng mL-1
                           ))
 
-    #-------------------------------- amount unit ------------------------------------
-    
-    amount <- switch(input$amountunit, 'mg/kg' = input$amt * 10^6, 'ug/kg' = input$amt * 10^3, 'ng/kg' = input$amt)
-    
-    
-    #-------------------------------- time unit ---------------------------------------
-    
-    tu <- switch(input$timeunit, hour = 1, day = 24, week = 24*7)
-    
-    #---------------------------------- dose event ------------------------------------------------
-    
-    
-    if(input$nd > 1){
-      ev1 <- eventTable()
-      ev1$add.dosing(dose = amount, nbr.doses = input$nd, dosing.interval = input$ii*24)}
-    else {
-      ev1 <- eventTable()
-      ev1$add.dosing(dose = amount, nbr.doses = input$nd)}
-    
-    ev1$add.sampling(0:(input$obs*tu))
+    source("www/event.R",local = TRUE)
     
     
     #------------------------ Model equations --------------------------
@@ -195,22 +176,9 @@ server <- function(input, output){
     incProgress(1/3)
 
       #---------------- Reference Drug --------------------  
-
+    
         #-------------------------- match drug name --------------------------------------
-        if (input$plotswitch == TRUE) {
-          
-          #-------------------------------- amount unit 2-------------------------------------
-          amount2 <- switch(input$amountunit2, 'mg/kg' = input$amt2 * 10^6, 'ug/kg' = input$amt2 * 10^3, 'ng/kg' = input$amt2)
-          #------------------------------------ dose event 2----------------------------------------------
-          
-          if(input$nd2 > 1){
-            ev2 <- eventTable()
-            ev2$add.dosing(dose = amount2, nbr.doses = input$nd2, dosing.interval = input$ii2*24)}
-          else {
-            ev2 <- eventTable()
-            ev2$add.dosing(dose = amount2,nbr.doses = input$nd2)}
-          
-          ev2$add.sampling(0:(input$obs*tu))
+        if ((input$plotswitch == TRUE) & (input$drugname !="")){
           
         if (input$drugname == "Amiloride"){
           pk2 <- "d/dt(D) = -F1*ka*D;
@@ -308,6 +276,11 @@ server <- function(input, output){
         }
     
     incProgress(1/3)
+    
+    #-------------------------------- time unit ---------------------------------------
+    
+    tu <- switch(input$timeunit, hour = 1, day = 24, week = 24*7)
+    
     #----------------- plot setting ----------------------      
     pl <- ggplot()+
       theme_bw()+
@@ -326,7 +299,7 @@ server <- function(input, output){
     co <- pl + ylab('Cardiac Output (ml/min)')
     p  <- pl + ylab('Mean Arterial Pressure (mmHg)')
     
-    if (input$plotswitch == FALSE & input$cmt =="" & is.null(File) ){
+    if ((input$plotswitch == FALSE | input$drugname == "") & input$cmt =="" & is.null(File) ){
 
       pk <- pk + xlim (0,100) + ylim (0,100)
       hr <- hr + xlim (0,100) + ylim (0,100)
@@ -367,7 +340,7 @@ server <- function(input, output){
         vdisp3[1] <- TRUE
         vdisp4[1] <- TRUE
       }
-      if (input$plotswitch == TRUE) {
+      if ((input$plotswitch == TRUE) & (input$drugname != "")) {
         pk <- pk + geom_line(data = x2, aes(x = time/tu, y = C/cu,color = "r"), size = 1)
         hr <- hr + geom_line(data = x2, aes(x = time/tu, y = HR,  color = "r"), size = 1)
         co <- co + geom_line(data = x2, aes(x = time/tu, y = CO,  color = "r"), size = 1)
@@ -430,20 +403,36 @@ server <- function(input, output){
   #--------------------------------------- Plots -------------------------------
   
   output$PK <- renderPlot({
-    r()$pk + axisset1
+    if(is.null(r()$pk)){
+      return(NULL)
+    }else{
+      r()$pk + axisset1
+    }
     })
 
   output$HR<- renderPlot({
-    r()$hr + axisset1
+    if(is.null(r()$hr)){
+      return(NULL)
+    }else{
+      r()$hr + axisset1
+    }
   })
   
   output$CO <- renderPlot({
-    r()$co + axisset1
+    if(is.null(r()$co)){
+      return(NULL)
+    }else{
+      r()$co + axisset1
+    }
   })
 
   
   output$MAP <- renderPlot({
-    r()$p + axisset1
+    if(is.null(r()$p)){
+      return(NULL)
+    }else{
+      r()$p + axisset1
+    }
   })
 
   
