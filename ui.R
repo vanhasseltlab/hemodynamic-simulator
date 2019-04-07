@@ -93,16 +93,25 @@ body <- dashboardBody(
                                           collapsible = TRUE,collapsed = TRUE,
                                           status = "primary",
                                           solidHeader = TRUE,
-                              
-                                          pickerInput("drugname", "Drug:",
-                                                      choices = c("Amiloride",
-                                                                  "Amlodipine",
-                                                                  "Atropine",
-                                                                  "Enalapril",
-                                                                  "Fasudil",
-                                                                  "Hydrochlorothiazide(HCTZ)",
-                                                                  "Prazosin"),
-                                                      options = list(title = "Reference Drugs")),
+                                          conditionalPanel(
+                                            condition = "input.specie == 'Rat'",
+                                            pickerInput("drugname", "Drug:",
+                                                        choices = c("Amiloride",
+                                                                    "Amlodipine",
+                                                                    "Atropine",
+                                                                    "Enalapril",
+                                                                    "Fasudil",
+                                                                    "Hydrochlorothiazide(HCTZ)",
+                                                                    "Prazosin"),
+                                                        options = list(title = "Select a reference drug"))
+                                          ),
+                                          
+                                          conditionalPanel(
+                                            condition = "input.specie == 'Dog'",
+                                            pickerInput("drugname2","Drug:",
+                                                        choices = "No reference drug available.",
+                                                        options = list (title = "No reference drug available."))
+                                          ),
                                           
                                           conditionalPanel(
                                             condition = "input.drugname != '' ",
@@ -227,35 +236,7 @@ body <- dashboardBody(
                                                                ".csv",
                                                                ".xlsx")),
                                           actionButton("template","Dataset Template",icon = icon("table"))
-                                         ),
-                                      
-                                      #-------------------------------------------- Model Information -------------------------------------------------------
-                                      box(width = NULL,
-                                          id = "box4",
-                                          title = actionLink("titleID4",span(icon("info-circle"),span("Model Information",style = "font-weight:bold"))),
-                                          collapsible = TRUE, collapsed = TRUE,
-                                          status = "primary",
-                                          solidHeader = TRUE,
-                                          
-                                          tags$img(src = "model.png",style = "display:block;max-width:80%;max-height:80%;width:auto;height:auto;
-                                                                        margin-left:auto;margin-right:auto;margin-bottom:auto;margin-top:auto"),
-                                          # open link in a new window :add argument target = "_blank" 
-                                          span(tags$a(href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4253457/",target="_blank", 
-                                                      "[1] Snelder, N. et al. Br J Pharmacol (2014)."),
-                                               style = "font-size:16px;font-style: italic;"),
-                                          
-                                          conditionalPanel(condition = "input.plotswitch",
-                                                           hr(),
-                                                           fluidRow(align = "center",span("Parameters for Reference Drug",style = "font-weight:bold;font-style:italic;font-size:18px;color:grey;"))),
-                                          fluidRow(align = "center",
-                                                   tableOutput("parameters2")),
-                                          conditionalPanel(condition = "input.cmt != ''",
-                                                           hr(),
-                                                           fluidRow(align = "center",span("Parameters for Investigational Drug",style = "font-weight:bold;font-style:italic;font-size:18px;color:grey;"))),
-                                          fluidRow(align = "center",
-                                                   tableOutput("parameters1"))
-                                          
-                                          )
+                                         )
                                ),
                                 column(width = 4,
                                        
@@ -288,12 +269,31 @@ body <- dashboardBody(
                                            plotOutput("MAP",height="400px"), 
                                            title = actionLink("titleID8",span(icon("bolt"),span("MAP - Mean Arterial Pressure", style = "font-weight:bold"))), 
                                            status = "primary", solidHeader = TRUE)
-                                       )
+                                       ),
+                               conditionalPanel(
+                                 condition = "input.drugname !='' | input.cmt !=''",
+                                 column(width = 8,
+                                        box(width = NULL,
+                                            id = "box4",
+                                            title = actionLink("titleID4",span(icon("list"),span("Parameters",style = "font-weight:bold"))),
+                                            collapsible = TRUE, collapsed = TRUE,
+                                            status = "primary",
+                                            solidHeader = TRUE,
+                                            column(width = 6,
+                                              conditionalPanel(condition = "input.drugname !=''",
+                                                               fluidRow(align = "center",span("Parameters for Reference Drug",style = "font-weight:bold;font-style:italic;font-size:18px;color:grey;")),
+                                                               uiOutput("parameters2"))
+                                                               ),
+                                            column(width = 6, 
+                                                   conditionalPanel(condition = "input.cmt != ''",
+                                                             fluidRow(align = "center",span("Parameters for Investigational Drug",style = "font-weight:bold;font-style:italic;font-size:18px;color:grey;")),
+                                                             uiOutput("parameters1"))
+                                                             ))))
                                ),
                       
                       #--------------------------------------------- The Bottom ------------------------------------------
                       fluidRow(align = "center",
-                               span("Version 1.0.3, Made by",
+                               span("Version 1.0.4, Made by",
                                     tags$a(href="mailto:y.fu@lacdr.leidenuniv.nl", "Yu Fu"),
                                     ", ",
                                     tags$a(href="https://www.universiteitleiden.nl/en/staffmembers/coen-van-hasselt#tab-1",target="_blank", "J.G.C. van Hasselt"),
@@ -308,13 +308,18 @@ body <- dashboardBody(
 ui <- dashboardPage(skin="blue",
       dashboardHeader(title = "Hemodynamic simulator",
                       tags$li(class = "dropdown",
+                              actionBttn("modelinfo",
+                                         icon = icon("info-circle"),
+                                         style = "bordered",size = "sm"),
+                              style = "padding-top:8px; padding-bottom:8px;padding-right:8px"),
+                      tags$li(class = "dropdown",
                               dropdown(icon = icon("cog"),
                                        style = "bordered",size = "sm",
                                        tooltip = tooltipOptions(placement = "bottom",title = "Click here to change units!"),
                                    awesomeRadio("timeunit","Time Unit:",choices = c("hour","day","week"), selected = "hour", inline = TRUE),
                                    awesomeRadio("concunit","Conc. Unit:",choices = c("mg/ml","ug/ml","ng/ml"), selected = "ng/ml", inline = TRUE)
-                                   
-                      ),style = "padding-top:8px; padding-bottom:8px;padding-right:8px"),
+                                   ),
+                              style = "padding-top:8px; padding-bottom:8px;padding-right:8px"),
                       tags$li(class = "dropdown", downloadBttn("report", 
                                                                span("Generate Report",style = "font-weight:bold;color:#fff"),
                                                                size = "sm",style = "bordered"),

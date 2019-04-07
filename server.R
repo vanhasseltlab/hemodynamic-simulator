@@ -465,13 +465,24 @@ server <- function(input, output){
       write.csv(template, file, row.names = FALSE)
     }
   )
-  output$parameters1 <- renderTable({
-    r()$theta1
-  },include.rownames = TRUE, include.colnames = FALSE)
+  observeEvent(input$modelinfo,{
+    showModal(modalDialog(
+      title = span("Model information",style = "font-weight:bold"),
+      tags$img(src = "model.png",style = "display:block;max-width:80%;max-height:80%;width:auto;height:auto;
+                                                                        margin-left:auto;margin-right:auto;margin-bottom:auto;margin-top:auto"),
+      # open link in a new window :add argument target = "_blank" 
+      span(tags$a(href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4253457/",target="_blank", 
+                  "[1] Snelder, N. et al. Br J Pharmacol (2014)."),
+           style = "font-size:16px;font-style: italic;") 
+    ))
+  })
+  output$parameters1 <- renderUI({
+    HTML(r()$info1,paste("<br>Emax =",input$emax,"<br>"),paste("EC50 =",input$ec50," ng/ml"))
+  })
   
-  output$parameters2 <- renderTable({
-    r()$theta2
-  },include.rownames = TRUE, include.colnames = FALSE)
+  output$parameters2 <- renderUI({
+    HTML(r()$info2)
+  })
   
   output$report <- downloadHandler(
     filename = "hemodynamic_simulator_report.pdf",
