@@ -58,19 +58,23 @@ server <- function(input, output){
     #--------------------- initial values ----------------------------------
     
     inits1 <- c(C = 0,
-               TIME = 0,
                HR  = 310, # bpm
                SV1  = 69/310, # mL / beat
                TPR = 155/69 # mmHg/mL *min
     )
     inits2 <- c(C = 0,
-                TIME = 0,
                 HR  = 323, # bpm
                 SV1  = 129/323, # mL / beat
                 TPR = 102/129 # mmHg/mL *min
     )
-    inits <- switch(input$rattype, "spontaneously hypertensive rats (SHR)" = inits1, "normotensive Wistar-Kyoto rats (WKY)" = inits2)
-    
+    if (input$specie == "Rat") {
+      inits <- switch(input$rattype, "spontaneously hypertensive rats (SHR)" = inits1, "normotensive Wistar-Kyoto rats (WKY)" = inits2)
+    } else {
+      inits <- c(C = 0,
+                 HR = 79.7,
+                 SV1 = 1450/79.7,
+                 TPR = 110/1450)
+    }
     #-------------- Mode of Action ----------------------
     
     EMAX_1 = 0
