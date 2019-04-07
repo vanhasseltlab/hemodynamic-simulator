@@ -250,7 +250,7 @@ server <- function(input, output){
                         EC50_3=0.172)    #ng mL-1
         }
         
-        if (input$drugname == "HCTZ"){
+        if (input$drugname == "Hydrochlorothiazide(HCTZ)"){
           pk2 <- "d/dt(D) = -F1*ka*D;
                   d/dt(A) =  F1*ka*D - k10*A;"
           pkpd2 <- paste(pk2,pd)
@@ -455,9 +455,16 @@ server <- function(input, output){
   observeEvent(input$template, {
     showModal(modalDialog(
       title = span("Please follow this template.",style = "font-weight:bold"),
-      renderTable(template)
+      renderTable(template),
+      downloadButton("dtemplate","Download this template")
     ))})
   
+  output$dtemplate <- downloadHandler(
+    filename = "data_template.csv",
+    content = function(file) {
+      write.csv(template, file, row.names = FALSE)
+    }
+  )
   output$parameters1 <- renderTable({
     r()$theta1
   },include.rownames = TRUE, include.colnames = FALSE)
@@ -467,7 +474,7 @@ server <- function(input, output){
   },include.rownames = TRUE, include.colnames = FALSE)
   
   output$report <- downloadHandler(
-    filename = "report.pdf",
+    filename = "hemodynamic_simulator_report.pdf",
     content = function(file) {
       
       #------------ Generating Report Progress bar -------------

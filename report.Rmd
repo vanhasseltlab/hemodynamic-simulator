@@ -16,6 +16,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(gridExtra)
+library(knitr)
 ```
 #1. Model information
 
@@ -36,13 +37,27 @@ $$
 
 ## Parameters for Reference Drug
 ```{r echo=FALSE}
-params$theta2
+if (!is.null(params$theta2)){
+  theta2 <- data.frame(params$theta2)
+  colnames(theta2) <- "value"
+  kable(theta2)
+}else {
+  return (NULL)
+}
 ```
+  
 ## Parameters for Investigational Drug
 ```{r echo=FALSE}
-params$theta1
+if (!is.null(params$theta1)){
+  theta1 <- data.frame(params$theta1)
+  colnames(theta1) <- "value"
+  kable(theta1)
+}else {
+  return (NULL)
+}
 ```
-#2. A plot of PK, HR, CO and MAP vs. time.
+  
+#2. Model simulation results
 
 ```{r plot,echo=FALSE}
 axisset2 <- theme(axis.title.x=element_text(face='bold',size=10),

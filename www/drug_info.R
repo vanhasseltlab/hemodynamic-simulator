@@ -42,7 +42,7 @@ info2 <- switch(input$drugname,
                  Emax model with Emax fixed to 1<br>
                  EC50 = 0.172 ng/ml",
                 
-                 "HCTZ" = "<b>Hydrochlorothiazide(HCTZ)<br><br>
+                 "Hydrochlorothiazide(HCTZ)" = "<b>Hydrochlorothiazide(HCTZ)<br><br>
                  <img src='HCTZ.png' width = '200'><br><br>
                  PK model:</b><br> One-compartmental model <br>
                  V1 = 0.0168 L/kg <br> k10 = 0.079 h<sup>-1</sup> <br> ka = 0.563 h<sup>-1</sup> <br> F1 = 0.007 <br>

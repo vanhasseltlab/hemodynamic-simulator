@@ -77,7 +77,7 @@ body <- dashboardBody(
                                           collapsible = TRUE,collapsed = TRUE,
                                           status = "primary",
                                           solidHeader = TRUE,
-                                          title = actionLink("titleID0",span(icon("paw"),span("Species",style = "font-weight:bold;font-size:18px"))),
+                                          title = actionLink("titleID0",span(icon("paw"),span("STEP 1: Select Specie for Simulation",style = "font-weight:bold;font-size:18px"))),
                                           awesomeRadio("specie","Select Specie for Simulation:",choices = c("Rat","Dog"), selected = "Rat", inline = TRUE),
                                           conditionalPanel(
                                             condition = "input.specie == 'Rat'",
@@ -89,7 +89,7 @@ body <- dashboardBody(
                                       #--------------------------------------- Reference Drug (Optional) ---------------------------
                                       box(width = NULL,
                                           id = "box1",
-                                          title = actionLink("titleID1",span(icon("book"),span("Reference Drug (Optional)",style = "font-weight:bold"))),
+                                          title = actionLink("titleID1",span(icon("book"),span("STEP 2: Simulate Reference Drug (Optional)",style = "font-weight:bold"))),
                                           collapsible = TRUE,collapsed = TRUE,
                                           status = "primary",
                                           solidHeader = TRUE,
@@ -100,7 +100,7 @@ body <- dashboardBody(
                                                                   "Atropine",
                                                                   "Enalapril",
                                                                   "Fasudil",
-                                                                  "HCTZ",
+                                                                  "Hydrochlorothiazide(HCTZ)",
                                                                   "Prazosin"),
                                                       options = list(title = "Reference Drugs")),
                                           
@@ -117,25 +117,25 @@ body <- dashboardBody(
                                             awesomeRadio("amountunit2","Amount Unit:",choices = c("mg/kg","ug/kg","ng/kg"), selected = "mg/kg", inline = TRUE),
                                             conditionalPanel(
                                               condition = "input.nodoselvl2 > 1",
-                                              sliderInput("ii2", "Interdose interval (day):", value = 1, min = 0.5, max = 14, step=0.5)
+                                              sliderInput("ii2", "Interdose interval (h):", value = 24, min = 12, max = 7*24, step = 12)
                                             ),
-                                            sliderInput("amt2_1","Amount 1:",min = 0, max = 10, value = 1,step = 0.01),
+                                            sliderInput("amt2_1","Amount 1:",min = 0, max = 10, value = 1,step = 0.1),
                                             
                                             conditionalPanel(
                                               condition = "input.nodoselvl2 >= 2",
-                                              sliderInput("amt2_2","Amount 2:",min = 0, max = 10, value = 1,step = 0.01)
+                                              sliderInput("amt2_2","Amount 2:",min = 0, max = 10, value = 1,step = 0.1)
                                             ),
                                             conditionalPanel(
                                               condition = "input.nodoselvl2 >= 3",
-                                              sliderInput("amt2_3","Amount 3:",min = 0, max = 10, value = 1,step = 0.01)
+                                              sliderInput("amt2_3","Amount 3:",min = 0, max = 10, value = 1,step = 0.1)
                                             ),
                                             conditionalPanel(
                                               condition = "input.nodoselvl2 >= 4",
-                                              sliderInput("amt2_4","Amount 4:",min = 0, max = 10, value = 1,step = 0.01)
+                                              sliderInput("amt2_4","Amount 4:",min = 0, max = 10, value = 1,step = 0.1)
                                             ),
                                             conditionalPanel(
                                               condition = "input.nodoselvl2 == 5",
-                                              sliderInput("amt2_5","Amount 5:",min = 0, max = 10, value = 1,step = 0.01)
+                                              sliderInput("amt2_5","Amount 5:",min = 0, max = 10, value = 1,step = 0.1)
                                             )
                                             )
                                           ),
@@ -143,7 +143,7 @@ body <- dashboardBody(
                                       #------------------------------------------- Investigational Drug -------------------------------------------------
                                       box(width = NULL,
                                           id = "box2",
-                                          title = actionLink("titleID2",span(icon("search"),span("Investigational Drug",style = "font-weight:bold"))),
+                                          title = actionLink("titleID2",span(icon("search"),span("STEP 3: Simulate Investigational Drug",style = "font-weight:bold"))),
                                           collapsible = TRUE,collapsed = TRUE,
                                           status = "primary",
                                           solidHeader = TRUE,
@@ -157,52 +157,49 @@ body <- dashboardBody(
                                             condition = "input.cmt =='one-compartmental'| input.cmt == 'two-compartmental'| input.cmt =='three-compartmental'" ,
                                             hr(),
                                             fluidRow(align="center",span("Dose Regimen",style = "font-weight:bold;font-style:italic;font-size:18px;color:grey;")),
-                                            awesomeRadio("timeunit","Time Unit:",
-                                                         choices = c("hour","day","week"), selected = "hour", inline = TRUE),
                                             
                                             pickerInput("nodoselvl1", "Number of dose levels:",choices = 1:5),
-                                        
                                             awesomeRadio("amountunit","Amount Unit:",choices = c("mg/kg","ug/kg","ng/kg"), selected = "mg/kg", inline = TRUE),
                                             conditionalPanel(
                                               condition = "input.nodoselvl1 > 1",
-                                              sliderInput("ii1", "Interdose interval (day):", value = 1, min = 0.5, max = 14, step=0.5)
+                                              sliderInput("ii1", "Interdose interval (h):", value = 24, min = 12, max = 7*24, step = 12)
                                             ),
-                                            sliderInput("amt1_1","Amount 1:",min = 0, max = 10, value = 1,step = 0.01),
+                                            sliderInput("amt1_1","Amount 1:",min = 0, max = 10, value = 1,step = 0.1),
                                             
                                             conditionalPanel(
                                               condition = "input.nodoselvl1 >= 2",
-                                              sliderInput("amt1_2","Amount 2:",min = 0, max = 10, value = 1,step = 0.01)
+                                              sliderInput("amt1_2","Amount 2:",min = 0, max = 10, value = 1,step = 0.1)
                                             ),
                                             conditionalPanel(
                                               condition = "input.nodoselvl1 >= 3",
-                                              sliderInput("amt1_3","Amount 3:",min = 0, max = 10, value = 1,step = 0.01)
+                                              sliderInput("amt1_3","Amount 3:",min = 0, max = 10, value = 1,step = 0.1)
                                             ),
                                             conditionalPanel(
                                               condition = "input.nodoselvl1 >= 4",
-                                              sliderInput("amt1_4","Amount 4:",min = 0, max = 10, value = 1,step = 0.01)
+                                              sliderInput("amt1_4","Amount 4:",min = 0, max = 10, value = 1,step = 0.1)
                                             ),
                                             conditionalPanel(
                                               condition = "input.nodoselvl1 == 5",
-                                              sliderInput("amt1_5","Amount 5:",min = 0, max = 10, value = 1,step = 0.01)
+                                              sliderInput("amt1_5","Amount 5:",min = 0, max = 10, value = 1,step = 0.1)
                                             ),
-                                            awesomeRadio("concunit","Concentration Unit:",choices = c("mg/ml","ug/ml","ng/ml"), selected = "ng/ml", inline = TRUE),
+                                            
                                             
                                             hr(),
                                             fluidRow(align="center",span("PK Parameters",style = "font-weight:bold;font-style:italic;font-size:18px;color:grey;")),
                                             sliderInput("V1","V1 (L/kg):",value = 10, min = 0, max = 100, step = 0.1),
-                                            sliderInput("k10",HTML("k10 (h<sup>-1</sup>):"),value = 0.1, min = 0, max = 10, step = 0.1)
+                                            sliderInput("k10",HTML("k10 (h<sup>-1</sup>):"),value = 0.1, min = 0.1, max = 10, step = 0.1)
                                           ),
                                           
                                           conditionalPanel(
                                             condition = "input.cmt =='two-compartmental'|input.cmt =='three-compartmental'",
-                                            sliderInput("k12",HTML("k12 (h<sup>-1</sup>):"),value = 0.1, min = 0, max = 10, step = 0.1),
-                                            sliderInput("k21",HTML("k21 (h<sup>-1</sup>):"),value = 0.1, min = 0, max = 10, step = 0.1)
+                                            sliderInput("k12",HTML("k12 (h<sup>-1</sup>):"),value = 0.1, min = 0.1, max = 10, step = 0.1),
+                                            sliderInput("k21",HTML("k21 (h<sup>-1</sup>):"),value = 0.1, min = 0.1, max = 10, step = 0.1)
                                           ),
                                           
                                           conditionalPanel(
                                             condition = "input.cmt =='three-compartmental'",
-                                            sliderInput("k13",HTML("k13 (h<sup>-1</sup>):"),value = 0.1, min = 0, max = 10, step = 0.1),
-                                            sliderInput("k31",HTML("k31 (h<sup>-1</sup>):"),value = 0.1, min = 0, max = 10, step = 0.1)
+                                            sliderInput("k13",HTML("k13 (h<sup>-1</sup>):"),value = 0.1, min = 0.1, max = 10, step = 0.1),
+                                            sliderInput("k31",HTML("k31 (h<sup>-1</sup>):"),value = 0.1, min = 0.1, max = 10, step = 0.1)
                                           ),
                                           conditionalPanel(
                                             condition = "input.cmt =='one-compartmental'| input.cmt == 'two-compartmental'| input.cmt =='three-compartmental'" ,
@@ -214,12 +211,12 @@ body <- dashboardBody(
                                         
                                             materialSwitch("cr",span("Circadian Rhythm Switch:",style = "font-weight:bold"),value = FALSE, status="primary"),
                                             sliderInput("emax","Emax:",min = 0, max = 2, value = 1, step = 0.01),
-                                            sliderInput("ec50","EC50 (ng/ml):", min = 1, max = 1000, value = 100, step = 1))),
+                                            sliderInput("ec50","EC50 (ng/ml):", min = 1, max = 1000, value = 100, step = 10))),
                                       
                                       #---------------------------------------------- Input your data (Optional) ------------------------------------------------ 
                                       box(width = NULL,
                                           id = "box3",
-                                          title = actionLink("titleID3",span(icon("upload"),span("Input your data (Optional)",style = "font-weight:bold"))),
+                                          title = actionLink("titleID3",span(icon("upload"),span("STEP 4: Input your data (Optional)",style = "font-weight:bold"))),
                                           collapsible = TRUE,collapsed = TRUE,
                                           status = "primary",
                                           solidHeader = TRUE,
@@ -260,7 +257,6 @@ body <- dashboardBody(
                                           
                                           )
                                ),
-                               
                                 column(width = 4,
                                        
                                        #------------------------------- PK -------------------------------------
@@ -279,7 +275,7 @@ body <- dashboardBody(
                                        ),
                                 column(width = 4,
                                        
-                                       #------------------------------- PK --------------------------------------
+                                       #------------------------------- HR --------------------------------------
                                        box(width = NULL, 
                                            id = "box7", collapsible = TRUE, 
                                            plotOutput("HR",height="400px"),
@@ -297,7 +293,7 @@ body <- dashboardBody(
                       
                       #--------------------------------------------- The Bottom ------------------------------------------
                       fluidRow(align = "center",
-                               span("Version 1.0.2, Made by",
+                               span("Version 1.0.3, Made by",
                                     tags$a(href="mailto:y.fu@lacdr.leidenuniv.nl", "Yu Fu"),
                                     ", ",
                                     tags$a(href="https://www.universiteitleiden.nl/en/staffmembers/coen-van-hasselt#tab-1",target="_blank", "J.G.C. van Hasselt"),
@@ -311,8 +307,19 @@ body <- dashboardBody(
 
 ui <- dashboardPage(skin="blue",
       dashboardHeader(title = "Hemodynamic simulator",
-                      tags$li(class = "dropdown", downloadBttn("report", span("Generate Report",style = "font-weight:bold;color:#fff"),size = "sm",style = "bordered"),
+                      tags$li(class = "dropdown",
+                              dropdown(icon = icon("cog"),
+                                       style = "bordered",size = "sm",
+                                       tooltip = tooltipOptions(placement = "bottom",title = "Click here to change units!"),
+                                   awesomeRadio("timeunit","Time Unit:",choices = c("hour","day","week"), selected = "hour", inline = TRUE),
+                                   awesomeRadio("concunit","Conc. Unit:",choices = c("mg/ml","ug/ml","ng/ml"), selected = "ng/ml", inline = TRUE)
+                                   
+                      ),style = "padding-top:8px; padding-bottom:8px;padding-right:8px"),
+                      tags$li(class = "dropdown", downloadBttn("report", 
+                                                               span("Generate Report",style = "font-weight:bold;color:#fff"),
+                                                               size = "sm",style = "bordered"),
                               style = "padding-top:8px; padding-bottom:8px;padding-right:10px"),
+                              
                       titleWidth = "500px"),
       dashboardSidebar(disable = TRUE),
       body
