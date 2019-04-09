@@ -363,19 +363,23 @@ server <- function(input, output){
         }
         
         if ("PK" %in% colnames(file1)) {
-          pk <- pk + geom_line(data = file1, aes(x = time,y = PK, color = "i"),size = 1)
+          pk <- pk + geom_point(data = file1, aes(x = time,y = PK, color = "i"),size = 2) +
+            geom_line(data = file1, aes(x = time,y = PK, color = "i"),size = 1)
           vdisp1[3] <- TRUE
           }
         if ("HR" %in% colnames(file1)) {
-          hr <- hr + geom_line(data = file1, aes(x = time,y = HR, color = "i"),size = 1)
+          hr <- hr + geom_point(data = file1, aes(x = time,y = HR, color = "i"),size = 2) +
+            geom_line(data = file1, aes(x = time,y = HR, color = "i"),size = 1)
           vdisp2[3] <- TRUE
           }
         if ("CO" %in% colnames(file1)) {
-          co <- co + geom_line(data = file1, aes(x = time, y = CO, color = "i"),size = 1)
+          co <- co + geom_point(data = file1, aes(x = time, y = CO, color = "i"),size = 2) +
+            geom_line(data = file1, aes(x = time,y = CO, color = "i"),size = 1)
           vdisp3[3] <- TRUE
           }
         if ("MAP" %in% colnames(file1)) {
-          p  <- p  + geom_line(data = file1, aes(x = time, y = MAP, color = "i"),size = 1)
+          p  <- p  + geom_point(data = file1, aes(x = time, y = MAP, color = "i"),size = 2) +
+            geom_line(data = file1, aes(x = time, y = MAP, color = "i"),size = 1)
           vdisp4[3] <- TRUE
         }
       }
@@ -454,7 +458,11 @@ server <- function(input, output){
     ))
   })
   
-  template <- data.frame(time = c(0:3,"..."),PK = c(1:4,"..."),HR = c(2:5,"..."),CO = c(3:6,"..."),MAP = c(4:7,"..."))
+  template <- data.frame(time = seq(0,120,12),
+                         PK = c(0,12,6,3,1.5,0.75,0.3,0.15,0.1,0.05,0.02),
+                         HR = c(310,305,307,308,309,308,308.5,309,309.4,309.3,309.7),
+                         CO = c(69,72,70.5,70.4,70,69.5,69.4,69.5,69.2,69,69.1),
+                         MAP = c(155,158,157,156.5,156.4,156,156.1,155.5,155.3,155,155.1))
   
   observeEvent(input$template, {
     showModal(modalDialog(
@@ -466,7 +474,7 @@ server <- function(input, output){
   output$dtemplate <- downloadHandler(
     filename = "data_template.csv",
     content = function(file) {
-      write.csv(template, file, row.names = FALSE)
+      write.csv2(template, file, row.names = FALSE)
     }
   )
   observeEvent(input$modelinfo,{
