@@ -269,7 +269,7 @@ server <- function(input, output){
         
         if (input$drugname == "Prazosin"){
           pk2 <- "d/dt(A) = -k10*A;"
-          pkpd2 <- paste(pk,SLpd)
+          pkpd2 <- paste(pk2,SLpd)
           pkparams2 <- c(V1 = 14*2.8*1000,k10 = (0.0927*60/14)*(0.3/2.8)**(-0.25))
           effparams <-c(SL1 = 0, SL2 = 0, SL3 = 0.328, POW = 0.0910)    #ng mL-1
         }
