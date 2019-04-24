@@ -201,7 +201,7 @@ server <- function(input, output){
                          F1 = 0.9887)
           effparams <- c(EMAX_1=0,
                          EC50_1=1000,    #ng mL-1
-                         EMAX_2=1,
+                         EMAX_2=-1,
                          EC50_2=245,    #ng mL-1
                          EMAX_3=0,
                          EC50_3=1000)    #ng mL-1
@@ -216,7 +216,7 @@ server <- function(input, output){
                          EC50_1=1000,    #ng mL-1
                          EMAX_2=0,
                          EC50_2=1000,    #ng mL-1
-                         EMAX_3=1,
+                         EMAX_3=-1,
                          EC50_3=82.8)    #ng mL-1
         }
         
@@ -236,9 +236,9 @@ server <- function(input, output){
           pkpd2 <- paste(pk2,pd)
           effparams <-c(EMAX_1=0,
                         EC50_1=1000,    #ng mL-1
-                        EMAX_2=1,
+                        EMAX_2=-1,
                         EC50_2=1200,    #ng mL-1
-                        EMAX_3=1,
+                        EMAX_3=-1,
                         EC50_3=1200)    #ng mL-1
         }
         
@@ -250,7 +250,7 @@ server <- function(input, output){
                         EC50_1=1000,    #ng mL-1
                         EMAX_2=0,
                         EC50_2=1000,    #ng mL-1
-                        EMAX_3=1,
+                        EMAX_3=-1,
                         EC50_3=0.172)    #ng mL-1
         }
         
@@ -261,7 +261,7 @@ server <- function(input, output){
           pkparams2 <- c(V1 = 0.0168*1000, k10 = 0.079, ka = 0.563, F1 = 0.007)
           effparams <-c(EMAX_1=0,
                         EC50_1=1000,    #ng mL-1
-                        EMAX_2=1,
+                        EMAX_2=-1,
                         EC50_2=28900,    #ng mL-1
                         EMAX_3=0,
                         EC50_3=1000)    #ng mL-1

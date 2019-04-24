@@ -219,7 +219,7 @@ body <- dashboardBody(
                                                        selected = "Heart Rate", inline = TRUE),
                                         
                                             materialSwitch("cr",span("Circadian Rhythm Switch:",style = "font-weight:bold"),value = FALSE, status="primary"),
-                                            sliderInput("emax","Emax:",min = 0, max = 2, value = 1, step = 0.01),
+                                            sliderInput("emax","Emax:",min = -1, max = 2, value = 1, step = 0.01),
                                             sliderInput("ec50","EC50 (ng/ml):", min = 1, max = 1000, value = 100, step = 10))),
                                       
                                       #---------------------------------------------- Input your data (Optional) ------------------------------------------------ 

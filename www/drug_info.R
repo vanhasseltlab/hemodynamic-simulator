@@ -29,7 +29,7 @@ info2 <- switch(input$drugname,
                  <img src='Enalapril.png' width = '200'><br><br>
                  PK model:</b> <br> Two-compartmental model with Michaelis-Menten elimination <br>
                  VM = 767 ug/(ml*h)<br> V1 = 0.346 L/kg <br> k12 = 1.56 h<sup>-1</sup><br> k21 = 2.94 h<sup>-1</sup><br>
-                 KM = 150 ug/ml <br> ka = 1.75 h<sup>-1</sup> <br> F1 = 0.376 h<sup>-1</sup> <br>
+                 KM = 150 ug/ml <br> ka = 1.75 h<sup>-1</sup> <br> F1 = 0.376 <br>
                  <br><b> PD model: </b> <br> Angiotensin-converting enzyme (ACE) inhibitor with effect on both TPR and SV <br>
                  Emax model with Emax fixed to 1<br>
                  EC50 = 1200 ng/ml",
