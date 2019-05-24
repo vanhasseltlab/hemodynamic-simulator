@@ -26,7 +26,9 @@ body <- dashboardBody(
                                # set shadow for boxes
                                setShadow("box"),
                                
-                               tags$head(tags$style(HTML(".skin-blue .main-header > .logo { background-color: #001158;
+                               tags$head(includeHTML("gtag.html")),
+			       
+			                         tags$head(tags$style(HTML(".skin-blue .main-header > .logo { background-color: #001158;
                                                                                             font-weight: bold;
                                                                                             font-size: 28px}
                                                           .skin-blue .main-header .logo:hover {background-color: #001158;}
